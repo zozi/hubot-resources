@@ -329,7 +329,6 @@ module.exports = (robot) ->
   robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+) for the ([\w.-]+) team$/i, (msg) ->
     resource = msg.match[1]
     team = msg.match[2]
-    msg.send "Creating a #{resource} for #{team}"
     if appendResource robot.brain, team, resource
       affections = ["have such cute stubby toes", "are such good friends to mice", "need so much help", "have great hygiene", "offered to clean my redis store", "generally suck more than most", "tend to smell less than you", "don't annoy me as much as you do", "are so predictable", "could hold their own in a zombie apocalypse"]
       msg.send "Because #{team} #{msg.random affections}, I have carefully crafted the best #{resource} in the history of the world."
