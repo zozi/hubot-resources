@@ -345,8 +345,9 @@ module.exports = (robot) ->
       msg.send "WAT? (wat)"
 
   # lists resources
-  robot.hear /list resources/i, (msg) ->
+  robot.hear /list\s?([\w.-]+)? resources?/i, (msg) ->
     resourceStatuses = {}
+    team = msg.match[1]
     for own resource, team of robot.brain.data.resources
       resourceStatuses[team] = [ ] unless resourceStatuses[team]
       owner = getResourceOwner(robot.brain.data.users, resource)
@@ -354,8 +355,11 @@ module.exports = (robot) ->
         resourceStatuses[team].push "#{resource} [#{owner.name}]"
       else
         resourceStatuses[team].push "#{resource} [] "
-    for own team, statuses of resourceStatuses
-        msg.send "#{team}: #{statuses.join(', ')} "
+    if team = msg.match[1]
+      msg.send "#{resourceStatuses[team].join(', ')}"
+    else
+      for own team, statuses of resourceStatuses
+        msg.send "#{team}: #{statuses.join(', ')}"
 
   ####################### WATCHES FOR REPO/BRANCH DEPLOYS  ############################
 
