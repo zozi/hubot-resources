@@ -351,9 +351,9 @@ module.exports = (robot) ->
       resourceStatuses[team] = [ ] unless resourceStatuses[team]
       owner = getResourceOwner(robot.brain.data.users, resource)
       if owner
-        resourceStatuses[team].push "#{owner.name} has #{resource}"
+        resourceStatuses[team].push "#{resource} [#{owner.name}]"
       else
-        resourceStatuses[team].push "#{resource} is free"
+        resourceStatuses[team].push "#{resource} [] "
     for own team, statuses of resourceStatuses
         msg.send "#{team}: #{statuses.join(', ')} "
 
