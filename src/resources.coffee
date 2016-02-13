@@ -158,7 +158,7 @@ module.exports = (robot) ->
   ####################### RESOURCE CLAIMING ############################
 
   # inquire who is using a resource
-  robot.hear /(?:who has|who is using|what\'s up with) ([\w.-]+)?/i, (msg) ->
+  robot.hear /(?:who has|who is using|what\Ws up with) ([\w.-]+)?/i, (msg) ->
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
       resourceOwner = getResourceOwner(robot.brain.data.users, resource)
@@ -181,6 +181,7 @@ module.exports = (robot) ->
       if stagingOwner isnt EMPTY
         clearResourceOwner(robot.brain.data, resource)
         resourceBackup = getResourceBackup(robot.brain.data.users, resource) || EMPTY
+        setResourceOwner(robot.brain.data, resource, msg.message.user.name)
         if resourceBackup isnt EMPTY
           msg.send replaceMention("ok... but #MENTION# isn't going to like it!", resourceBackup);
         else
