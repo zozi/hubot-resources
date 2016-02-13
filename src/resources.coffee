@@ -211,7 +211,7 @@ module.exports = (robot) ->
           else
             msg.send "As you wish. #{resource} is now clear"
         else
-          msg.send "I'm sorry but only #{stagingOwner.name} make that call, Richard."
+          msg.send "I'm sorry but only #{stagingOwner.name} can make that call, Richard."
       else
         msg.send "Yes, I know. Why must you state the obvious?"
     else
