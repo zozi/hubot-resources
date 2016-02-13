@@ -195,7 +195,7 @@ module.exports = (robot) ->
     msg.send "Bang bang, you're dead. Try again with more conviction eh?"
 
   # Free a resource that you own
-  robot.hear /([\w.-]+) is( all | )(free|clear)/i, (msg) ->
+  robot.hear /([\w.-]+) is(?: all | )(?:free|clear)/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
@@ -292,7 +292,7 @@ module.exports = (robot) ->
     msg.send "Ok #{msg.message.user.name}, your dibs are all cleared out."
 
   # remove from dibs queue
-  robot.hear /(?:Remove|Delete) me from (dibs|shotgun) on ([\w.-]+)\??/i, (msg) ->
+  robot.hear /(?:Remove|Delete) me from (?:dibs|shotgun) on ([\w.-]+)\??/i, (msg) ->
     EMPTY = {}
     resource = msg.match[1].trim()
     if robot.brain.data.resources[resource]
