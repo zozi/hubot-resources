@@ -82,16 +82,16 @@ module.exports = (robot) ->
       if "has dibs on #{resource}" not in user.roles
         user.roles.push("has dibs on #{resource}")
 
-  appendResource = (brain, resource) ->
+  appendResource = (brain, team, resource) ->
     resources = brain.data.resources || {}
     if resources[resource]
       false
     else
-      resources[resource] = {}
+      resources[resource] = team
       brain.data.resources = resources
       true
 
-  removeResource = (brain, resource) ->
+  removeResource = (brain, team, resource) ->
     resources = brain.data.resources || {}
     if resources[resource]
       delete resources[resource]
@@ -184,7 +184,7 @@ module.exports = (robot) ->
         if resourceBackup isnt EMPTY
           msg.send replaceMention("ok... but #MENTION# isn't going to like it!", resourceBackup);
         else
-          msg.send replaceMention("So #MENTION#, #{msg.message.user.name} like totally broke in and tossed you out of the drivers' seat for #{resource}. Sucks dude. Have a doughnut :doughnut:.", stagingOwner) 
+          msg.send replaceMention("So #MENTION#, #{msg.message.user.name} like totally broke in and tossed you out of the drivers' seat for #{resource}. Sucks dude. Have a doughnut :doughnut:.", stagingOwner)
       else
         msg.send "Why kick down the door when it's unlocked, #{msg.message.user.name}?"
     else
@@ -307,7 +307,7 @@ module.exports = (robot) ->
         msg.send "Silly Human, no one is... oh nevermind, why do I bother explaining?"
     else
       msg.send "#{resource}? We don't have no stinking #{resource}."
-      
+
   # clear dibs queue
   robot.hear /(?:bump|boot|clear) dibs for ([\w.-]+)/i, (msg) ->
     EMPTY = {}
@@ -325,10 +325,13 @@ module.exports = (robot) ->
   ####################### RESOURCES: CREATE/DESTROY/LIST ############################
 
   # robot resource creation commands
-  robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+)$/i, (msg) ->
+  robot.respond /(?:give me|create)(?: a)?(?: new)? resource ([\w.-]+) for the ([\w.-]+) team$/i, (msg) ->
     resource = msg.match[1]
-    if appendResource robot.brain, resource
-      msg.send "Yeehaw! Oh boy this will be the best #{resource} you ever did see."
+    team = msg.match[2]
+    msg.send "Creating a #{resource} for #{team}"
+    if appendResource robot.brain, team, resource
+      affections = ["have such cute stubby toes", "are such good friends to mice", "need so much help", "have great hygiene", "offered to clean my redis store", "generally suck more than most", "tend to smell less than you", "don't annoy me as much as you do", "are so predictable", "could hold their own in a zombie apocalypse"]
+      msg.send "Because #{team} #{msg.random affections}, I have carefully crafted the best #{resource} in the history of the world."
     else
       msg.send "Meh. Seen it before"
 
@@ -343,14 +346,16 @@ module.exports = (robot) ->
 
   # lists resources
   robot.hear /list resources/i, (msg) ->
-    resourceStatuses = []
-    for own resource, active of robot.brain.data.resources
+    resourceStatuses = {}
+    for own resource, team of robot.brain.data.resources
+      resourceStatuses[team] = [ ] unless resourceStatuses[team]
       owner = getResourceOwner(robot.brain.data.users, resource)
       if owner
-        resourceStatuses.push "#{owner.name} has #{resource}"
+        resourceStatuses[team].push "#{owner.name} has #{resource}"
       else
-        resourceStatuses.push "#{resource} is free"
-    msg.send resourceStatuses.join(", ")
+        resourceStatuses[team].push "#{resource} is free"
+    for own team, statuses of resourceStatuses
+        msg.send "#{team}: #{statuses.join(', ')} "
 
   ####################### WATCHES FOR REPO/BRANCH DEPLOYS  ############################
 
