@@ -1,7 +1,7 @@
 {
   "name": "hubot-resources",
   "description": "A hubot script that manages limited resources",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "author": "Chris Dwan <radixhound@gmail.com>",
   "license": "MIT",
 
