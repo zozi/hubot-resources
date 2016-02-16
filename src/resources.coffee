@@ -87,7 +87,7 @@ module.exports = (robot) ->
     if resources[resource]
       false
     else
-      resources[resource] = team
+      resources[resource] = {team: team}
       brain.data.resources = resources
       true
 
@@ -348,15 +348,15 @@ module.exports = (robot) ->
   robot.hear /list\s?([\w.-]+)? resources?/i, (msg) ->
     resourceStatuses = {}
     team = msg.match[1]
-    for own resource, team of robot.brain.data.resources
-      resourceStatuses[team] = [ ] unless resourceStatuses[team]
+    for own resource, data of robot.brain.data.resources
+      resourceStatuses[data.team] = [ ] unless resourceStatuses[data.team]
       owner = getResourceOwner(robot.brain.data.users, resource)
       if owner
-        resourceStatuses[team].push "#{resource} [#{owner.name}]"
+        resourceStatuses[data.team].push "#{resource} [#{owner.name}]"
       else
-        resourceStatuses[team].push "#{resource} [] "
+        resourceStatuses[data.team].push "#{resource} [] "
     if team = msg.match[1]
-      msg.send "#{resourceStatuses[team].join(', ')}"
+      msg.send "#{resourceStatuses[data.team].join(', ')}"
     else
       for own team, statuses of resourceStatuses
         msg.send "#{team}: #{statuses.join(', ')}"
