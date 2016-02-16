@@ -91,7 +91,7 @@ module.exports = (robot) ->
       brain.data.resources = resources
       true
 
-  removeResource = (brain, team, resource) ->
+  removeResource = (brain, resource) ->
     resources = brain.data.resources || {}
     if resources[resource]
       delete resources[resource]
